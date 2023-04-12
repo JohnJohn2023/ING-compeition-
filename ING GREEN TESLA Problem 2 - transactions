@@ -1,0 +1,83 @@
+import java.util.*;
+
+public class BankTransactions {
+    public static void main(String[] args) {
+        // sample input data
+        Transaction[] transactions = {
+            new Transaction("111", TransactionType.IN, 500),
+            new Transaction("222", TransactionType.OUT, 200),
+            new Transaction("333", TransactionType.IN, 1000),
+            new Transaction("222", TransactionType.IN, 300),
+            new Transaction("111", TransactionType.OUT, 100),
+            new Transaction("333", TransactionType.OUT, 500),
+            new Transaction("444", TransactionType.IN, 700),
+            new Transaction("444", TransactionType.OUT, 400)
+        };
+        
+        // create a map to store the balance for each account
+        Map<String, Integer> balanceMap = new HashMap<>();
+        
+        // process the transactions and update the balance map
+        for (Transaction transaction : transactions) {
+            String account = transaction.getAccount();
+            int amount = transaction.getAmount();
+            int balance = balanceMap.getOrDefault(account, 0);
+            if (transaction.getType() == TransactionType.IN) {
+                balance += amount;
+            } else {
+                balance -= amount;
+            }
+            balanceMap.put(account, balance);
+        }
+        
+        // sort the accounts by balance in ascending order
+        List<String> accounts = new ArrayList<>(balanceMap.keySet());
+        accounts.sort(Comparator.comparingInt(balanceMap::get));
+        
+        // print the results
+        System.out.println("Account\tIn\tOut\tBalance");
+        for (String account : accounts) {
+            int balance = balanceMap.get(account);
+            int in = 0, out = 0;
+            for (Transaction transaction : transactions) {
+                if (transaction.getAccount().equals(account)) {
+                    if (transaction.getType() == TransactionType.IN) {
+                        in += transaction.getAmount();
+                    } else {
+                        out += transaction.getAmount();
+                    }
+                }
+            }
+            System.out.printf("%s\t%d\t%d\t%d\n", account, in, out, balance);
+        }
+    }
+    
+    private static class Transaction {
+        private final String account;
+        private final TransactionType type;
+        private final int amount;
+        
+        public Transaction(String account, TransactionType type, int amount) {
+            this.account = account;
+            this.type = type;
+            this.amount = amount;
+        }
+        
+        public String getAccount() {
+            return account;
+        }
+        
+        public TransactionType getType() {
+            return type;
+        }
+        
+        public int getAmount() {
+            return amount;
+        }
+    }
+    
+    private enum TransactionType {
+        IN,
+        OUT
+    }
+}
