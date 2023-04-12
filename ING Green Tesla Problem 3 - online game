@@ -1,0 +1,96 @@
+import java.util.*;
+
+public class ClanEventOrder {
+    
+    // A class to store the details of a clan
+    static class Clan {
+        int id;
+        int size;
+        int points;
+        
+        Clan(int id, int size, int points) {
+            this.id = id;
+            this.size = size;
+            this.points = points;
+        }
+    }
+    
+    public static void main(String[] args) {
+        int m = 3; // maximum group size
+        List<Clan> clans = new ArrayList<>(); // list of clans
+        
+        // Sample input
+        clans.add(new Clan(1, 4, 20));
+        clans.add(new Clan(2, 2, 15));
+        clans.add(new Clan(3, 3, 30));
+        clans.add(new Clan(4, 1, 10));
+        clans.add(new Clan(5, 1, 5));
+        clans.add(new Clan(6, 2, 15));
+        clans.add(new Clan(7, 3, 25));
+        clans.add(new Clan(8, 1, 5));
+        
+        // Sort the clans by their total points in descending order
+        Collections.sort(clans, new Comparator<Clan>() {
+            @Override
+            public int compare(Clan c1, Clan c2) {
+                int cmp = Integer.compare(c2.points, c1.points);
+                if (cmp == 0) {
+                    cmp = Integer.compare(c1.size, c2.size);
+                }
+                return cmp;
+            }
+        });
+        
+        // Create a priority queue to store the groups
+        PriorityQueue<List<Clan>> groupQueue = new PriorityQueue<>(new Comparator<List<Clan>>() {
+            @Override
+            public int compare(List<Clan> g1, List<Clan> g2) {
+                int cmp = Integer.compare(getGroupPoints(g2), getGroupPoints(g1));
+                if (cmp == 0) {
+                    cmp = Integer.compare(g1.size(), g2.size());
+                }
+                return cmp;
+            }
+        });
+        
+        // Add the clans to the groups in order
+        for (Clan clan : clans) {
+            // Check if there is space in any of the existing groups
+            boolean added = false;
+            for (List<Clan> group : groupQueue) {
+                if (group.size() < m && canAddToGroup(group, clan)) {
+                    group.add(clan);
+                    added = true;
+                    break;
+                }
+            }
+            // If not, create a new group
+            if (!added) {
+                List<Clan> newGroup = new ArrayList<>();
+                newGroup.add(clan);
+                groupQueue.add(newGroup);
+            }
+        }
+        
+        // Print the order in which the groups will enter the event
+        int groupNumber = 1;
+        while (!groupQueue.isEmpty()) {
+            List<Clan> group = groupQueue.poll();
+            System.out.println("Group " + groupNumber + ": " + groupToString(group));
+            groupNumber++;
+        }
+    }
+    
+    // Returns true if the given clan can be added to the given group
+    private static boolean canAddToGroup(List<Clan> group, Clan clan) {
+        // Check if the clan has any members in common with the group
+        for (Clan groupClan : group) {
+            if (haveCommonMembers(clan, groupClan)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    // Returns true if the two clans have any members in common
+    private static boolean haveCommonMembers(Clan
