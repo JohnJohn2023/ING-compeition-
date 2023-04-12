@@ -3,6 +3,8 @@
 
 ATM SERVICE 
 This solution uses a set to store unique ATM IDs and a priority queue to store service requests. The priority queue automatically orders the requests by priority level, with lower numbers indicating higher priority. The solution then iterates through the priority queue and adds unique service requests to a list while ignoring duplicate ATM IDs. Finally, the list is sorted by region number in ascending order and printed out in the appropriate order.
+
+
 import java.util.*;
 
 public class ServiceOrder {
@@ -87,7 +89,8 @@ class ServiceRequest implements Comparable<ServiceRequest> {
 
 ONLINE GAME 
 This algorithm uses the Clan class to represent a clan, and implements the Comparable interface to allow clans to be sorted based on their points, size, and ID. It then reads in the input values, sorts the clans in decreasing order of points, and divides them into groups according to the given rules. Finally, it outputs the clan IDs in the order in which they should enter the event.
-import java.util.*;
+
+    import java.util.*;
 
 class Clan implements Comparable<Clan> {
     int id;
