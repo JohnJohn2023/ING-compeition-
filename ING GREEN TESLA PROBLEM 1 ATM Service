@@ -1,0 +1,47 @@
+import java.util.*;
+
+enum WorkOrderType {
+    PLANNED, URGENT_LOW_CASH, URGENT_OUTAGE
+}
+
+class WorkOrder implements Comparable<WorkOrder> {
+    int region;
+    int priority;
+    WorkOrderType type;
+    String atmId;
+
+    public WorkOrder(int region, int priority, WorkOrderType type, String atmId) {
+        this.region = region;
+        this.priority = priority;
+        this.type = type;
+        this.atmId = atmId;
+    }
+
+    @Override
+    public int compareTo(WorkOrder other) {
+        if (this.region != other.region) {
+            return Integer.compare(this.region, other.region);
+        } else if (this.priority != other.priority) {
+            return Integer.compare(other.priority, this.priority);
+        } else {
+            return this.type.compareTo(other.type);
+        }
+    }
+}
+
+public class WorkOrderPriorityQueue {
+    public static void main(String[] args) {
+        // Read in the list of work orders from a file or database
+        List<WorkOrder> workOrders = new ArrayList<>();
+        workOrders.add(new WorkOrder(1, 2, WorkOrderType.PLANNED, "ATM1"));
+        workOrders.add(new WorkOrder(1, 1, WorkOrderType.URGENT_OUTAGE, "ATM2"));
+        workOrders.add(new WorkOrder(2, 3, WorkOrderType.URGENT_LOW_CASH, "ATM3"));
+        workOrders.add(new WorkOrder(2, 2, WorkOrderType.URGENT_OUTAGE, "ATM4"));
+        workOrders.add(new WorkOrder(3, 1, WorkOrderType.URGENT_OUTAGE, "ATM5"));
+        workOrders.add(new WorkOrder(3, 2, WorkOrderType.PLANNED, "ATM1"));
+
+        // Sort the list of work orders
+        Collections.sort(workOrders);
+
+        // Create a queue of prioritized work orders
+        Queue<WorkOrder> priorityQueue =
